@@ -1,0 +1,29 @@
+{
+  "name": "준은로지스틱스 면접자 웹앱",
+  "short_name": "JE 면접앱",
+  "description": "면접 대기 및 면접 과정에서 면접자가 직접 체험하며 신뢰를 형성하는 키오스크 웹앱",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "./assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
