@@ -1,1 +1,225 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1280, initial-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>(주)준은로지스틱스</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">JE</div>
+        <div class="brand-text">
+          <div class="brand-title" id="brandTitle">(주)준은로지스틱스</div>
+          <div class="brand-sub" id="brandSub">Interview Kiosk</div>
+        </div>
+      </div>
 
+      <div class="topbar-right">
+        <div class="lang">
+          <button class="chip" data-lang="ko" id="langKo">한국어</button>
+          <button class="chip" data-lang="zh" id="langZh">中文</button>
+          <button class="chip" data-lang="en" id="langEn">EN</button>
+        </div>
+        <div class="status" id="apiStatus">DATA: -</div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Left Nav -->
+      <nav class="sidenav">
+        <button class="navbtn" data-route="home" id="navHome">홈</button>
+        <button class="navbtn" data-route="company" id="navCompany">회사 소개</button>
+        <button class="navbtn" data-route="work" id="navWork">일하는 방식</button>
+        <button class="navbtn" data-route="income" id="navIncome">수익 & 정산</button>
+        <button class="navbtn" data-route="contract" id="navContract">계약 안내</button>
+        <button class="navbtn" data-route="diff" id="navDiff">차별점</button>
+
+        <div class="navhint" id="navHint">
+          태블릿 가로 전용 · 고정 레이아웃 (1280×800+)
+        </div>
+      </nav>
+
+      <!-- Content -->
+      <section class="content" id="content">
+        <!-- Home -->
+        <div class="page" id="page-home">
+          <div class="hero">
+            <video class="hero-video" id="heroVideo" autoplay muted loop playsinline></video>
+            <div class="hero-overlay"></div>
+
+            <div class="hero-center">
+              <div class="hero-headline" id="homeHeadline">협업과 상생 소통이 가장 중요한 영업점</div>
+              <div class="hero-subheadline" id="homeSubheadline">쿠팡CLS 공식 인증 우수 빅 벤더 (주)준은로지스틱스</div>
+
+              <div class="hero-actions">
+                <button class="primary" id="btnStart">시작하기</button>
+              </div>
+
+              <div class="hero-footnote" id="homeFootnote">
+                ※ 본 화면의 수익 안내는 “범위 + 구조 중심”이며 확정 금액을 보장하지 않습니다.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Company -->
+        <div class="page" id="page-company">
+          <div class="page-header">
+            <h1 id="companyTitle">회사 소개</h1>
+            <p class="muted" id="companyDesc">운영 안정성과 신뢰를 한눈에 확인하세요.</p>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <h2 id="statsTitle">운영 규모</h2>
+              <div class="stats" id="statsBox"></div>
+            </div>
+
+            <div class="card">
+              <h2 id="timelineTitle">연혁</h2>
+              <div class="timeline" id="timelineBox"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 id="galleryTitle">현장 이미지/영상</h2>
+            <p class="muted" id="galleryDesc">
+              실제 현장, 차량, 분류, 업무 모습 등은 동일한 자산(영상/이미지)을 공통 사용합니다.
+              (추후 사진/영상 폴더를 연결해 확장 가능)
+            </p>
+
+            <div class="placeholder">
+              <div class="ph-title">ASSETS PLACEHOLDER</div>
+              <div class="ph-desc">assets 폴더에 이미지/영상 파일을 넣으면 이 영역을 갤러리로 확장할 수 있어요.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Work -->
+        <div class="page" id="page-work">
+          <div class="page-header">
+            <h1 id="workTitle">일하는 방식</h1>
+            <p class="muted" id="workDesc">주간/야간 하루 흐름을 미리 확인해 불안을 줄입니다.</p>
+          </div>
+
+          <div class="tabs">
+            <button class="tab active" data-tab="day" id="tabDay">주간 기사 하루</button>
+            <button class="tab" data-tab="night" id="tabNight">야간 기사 하루</button>
+          </div>
+
+          <div class="card">
+            <div class="flow" id="flowBox"></div>
+          </div>
+
+          <div class="card">
+            <h2 id="workChecklistTitle">업무 시작 전 필수 사항</h2>
+            <div class="checklist" id="checklistBox"></div>
+          </div>
+        </div>
+
+        <!-- Income -->
+        <div class="page" id="page-income">
+          <div class="page-header">
+            <h1 id="incomeTitle">수익 & 정산</h1>
+            <p class="muted" id="incomeDesc">가장 중요한 신뢰 포인트: 구조와 범위를 투명하게 설명합니다.</p>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <h2 id="incomeStructureTitle">수익 구조</h2>
+              <ul class="bullets" id="incomeStructureList"></ul>
+              <div class="note" id="incomeNote">
+                ⚠️ 금액은 ‘확정’이 아니라 ‘범위 + 구조 중심’으로 안내합니다.
+              </div>
+            </div>
+
+            <div class="card">
+              <h2 id="simTitle">순수익 계산 예시 (시뮬레이션)</h2>
+
+              <div class="sim">
+                <div class="sim-row">
+                  <label id="simGrossLabel">월 매출(예시)</label>
+                  <input type="number" id="simGross" value="5000000" step="100000" />
+                </div>
+
+                <div class="sim-row">
+                  <label id="simCostLabel">월 비용(예시)</label>
+                  <input type="number" id="simCost" value="1500000" step="100000" />
+                </div>
+
+                <div class="sim-row">
+                  <label id="simNetLabel">예상 순수익</label>
+                  <div class="sim-result" id="simNet">-</div>
+                </div>
+
+                <div class="muted" id="simDisclaimer">
+                  * 본 시뮬레이션은 이해를 돕기 위한 예시이며 실제 수익을 보장하지 않습니다.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 id="settlementTitle">정산 안내</h2>
+            <ul class="bullets" id="settlementList"></ul>
+          </div>
+        </div>
+
+        <!-- Contract -->
+        <div class="page" id="page-contract">
+          <div class="page-header">
+            <h1 id="contractTitle">계약 안내</h1>
+            <p class="muted" id="contractDesc">오해를 줄이고, 투명하게 절차를 안내합니다.</p>
+          </div>
+
+          <div class="card">
+            <h2 id="contractFlowTitle">계약 진행 단계</h2>
+            <div class="steps" id="contractSteps"></div>
+          </div>
+
+          <div class="card">
+            <h2 id="contractFaqTitle">자주 묻는 계약 질문</h2>
+            <div class="faq" id="faqBox"></div>
+          </div>
+
+          <div class="card">
+            <h2 id="contractCheckTitle">계약 전 꼭 확인할 사항</h2>
+            <ul class="bullets" id="contractCheckList"></ul>
+          </div>
+        </div>
+
+        <!-- Diff -->
+        <div class="page" id="page-diff">
+          <div class="page-header">
+            <h1 id="diffTitle">준은로지스틱스의 차별점</h1>
+            <p class="muted" id="diffDesc">왜 여기여야 하는지, 마지막 선택 이유를 제공합니다.</p>
+          </div>
+
+          <div class="grid2" id="diffGrid"></div>
+
+          <div class="card">
+            <h2 id="diffMessageTitle">우리는 이렇게 생각합니다</h2>
+            <div class="quote" id="diffMessage">
+              “면접은 ‘설명’이 아니라 ‘경험’이어야 합니다. 말로 설득하기보다, 체계를 보여드립니다.”
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div id="footerLeft">© JE Logistics · Interview Kiosk</div>
+      <div id="footerRight">Landscape Only · 1280×800+</div>
+    </footer>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
