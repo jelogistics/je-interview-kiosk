@@ -6,12 +6,16 @@
   <meta name="theme-color" content="#0b1220" />
   <title>(주)준은로지스틱스</title>
   <link rel="stylesheet" href="./styles.css" />
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <link rel="apple-touch-icon" href="./assets/icons/icon-192.png" />
 </head>
 <body>
   <div id="app">
+    <!-- GLOBAL VIDEO BACKGROUND -->
+    <div class="bg-video-wrap" aria-hidden="true">
+      <video class="bg-video" id="bgVideo" autoplay muted loop playsinline></video>
+      <div class="bg-video-overlay"></div>
+      <div class="bg-video-vignette"></div>
+    </div>
+
     <!-- Top Bar -->
     <header class="topbar">
       <div class="brand">
@@ -38,13 +42,13 @@
       <nav class="sidenav">
         <button class="navbtn" data-route="home" id="navHome">홈</button>
         <button class="navbtn" data-route="company" id="navCompany">회사 소개</button>
-        <button class="navbtn" data-route="work" id="navWork">일하는 방식</button>
+        <button class="navbtn" data-route="work" id="navWork">업무 방식</button>
         <button class="navbtn" data-route="income" id="navIncome">수익 & 정산</button>
         <button class="navbtn" data-route="contract" id="navContract">계약 안내</button>
-        <button class="navbtn" data-route="diff" id="navDiff">차별점</button>
+        <button class="navbtn" data-route="diff" id="navDiff">복지 혜택</button>
 
         <div class="navhint" id="navHint">
-          태블릿 가로 전용 · 고정 레이아웃 (1280×800+)
+          (주)준은로지스틱
         </div>
       </nav>
 
@@ -52,19 +56,16 @@
       <section class="content" id="content">
         <!-- Home -->
         <div class="page" id="page-home">
-          <div class="hero">
-            <video class="hero-video" id="heroVideo" autoplay muted loop playsinline></video>
-            <div class="hero-overlay"></div>
+          <div class="home-hero">
+            <div class="home-center">
+              <div class="home-headline" id="homeHeadline">협업과 상생 소통이 가장 중요한 영업점</div>
+              <div class="home-subheadline" id="homeSubheadline">쿠팡CLS 공식 인증 우수 빅 벤더 (주)준은로지스틱스</div>
 
-            <div class="hero-center">
-              <div class="hero-headline" id="homeHeadline">협업과 상생 소통이 가장 중요한 영업점</div>
-              <div class="hero-subheadline" id="homeSubheadline">쿠팡CLS 공식 인증 우수 빅 벤더 (주)준은로지스틱스</div>
-
-              <div class="hero-actions">
+              <div class="home-actions">
                 <button class="primary" id="btnStart">시작하기</button>
               </div>
 
-              <div class="hero-footnote" id="homeFootnote">
+              <div class="home-footnote" id="homeFootnote">
                 ※ 본 화면의 수익 안내는 “범위 + 구조 중심”이며 확정 금액을 보장하지 않습니다.
               </div>
             </div>
@@ -218,8 +219,8 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <div id="footerLeft">© JE Logistics · Interview Kiosk</div>
-      <div id="footerRight">Landscape Only · 1280×800+</div>
+      <div id="footerLeft">ⓒ 2026. (주)준은로지스틱스 All Rights Reserved.</div>
+      <div id="footerRight">(주)준은로지스틱스</div>
     </footer>
   </div>
 
