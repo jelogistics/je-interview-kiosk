@@ -23,39 +23,7 @@ const PAGES = ["home", "company", "work", "income", "contract", "diff"];
 
 function $(id){ return document.getElementById(id); }
 
-/* =========================================================
-   ✅ PWA 추가 코드 (Service Worker 등록)
-   - sw.js 파일이 repo 루트에 있어야 함 (./sw.js)
-   - GitHub Pages에서 설치 버튼이 뜨려면 필요
-========================================================= */
-async function registerServiceWorker_() {
-  if (!("serviceWorker" in navigator)) return;
-
-  try {
-    // GitHub Pages에서도 상대경로로 안전하게 등록
-    const reg = await navigator.serviceWorker.register("./sw.js", { scope: "./" });
-    console.log("[PWA] Service Worker registered:", reg);
-
-    // 업데이트 감지 시 로그
-    reg.addEventListener("updatefound", () => {
-      const installing = reg.installing;
-      if (!installing) return;
-
-      installing.addEventListener("statechange", () => {
-        if (installing.state === "installed") {
-          console.log("[PWA] New version installed. Reload to apply.");
-        }
-      });
-    });
-  } catch (e) {
-    console.warn("[PWA] Service Worker registration failed:", e);
-  }
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
-  /* ✅ PWA 추가: Service Worker 먼저 등록 */
-  await registerServiceWorker_();
-
   bindUI_();
   initLanguage_();
   initRouter_();
@@ -68,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function bindUI_() {
   UI.apiStatus = $("apiStatus");
-  UI.heroVideo = $("heroVideo");
+  UI.bgVideo = $("bgVideo");
   UI.btnStart = $("btnStart");
 
   // language buttons
@@ -94,21 +62,19 @@ function bindUI_() {
     });
   });
 
-  // start button -> company (or work)
+  // start button -> company
   UI.btnStart.addEventListener("click", () => {
     setRoute_("company");
   });
 }
 
 function initLanguage_() {
-  // localStorage persistence
   const saved = localStorage.getItem("je_kiosk_lang");
   if (saved && ["ko","zh","en"].includes(saved)) STATE.lang = saved;
   updateLangUI_();
 }
 
 function initRouter_() {
-  // route from hash
   const fromHash = (location.hash || "").replace("#", "").trim();
   if (fromHash && PAGES.includes(fromHash)) STATE.route = fromHash;
 
@@ -150,12 +116,11 @@ function initIncomeSim_() {
 }
 
 async function loadContent_() {
-  // If GAS URL not set, use fallback
   if (!GAS_WEBAPP_URL || GAS_WEBAPP_URL.includes("PASTE_YOUR_GAS_WEBAPP_URL_HERE")) {
     STATE.content = fallbackContent_();
     STATE.loadedFrom = "fallback";
     setApiStatus_("DATA: fallback (GAS URL not set)");
-    setupHeroVideo_();
+    setupBackgroundVideo_();
     return;
   }
 
@@ -163,8 +128,6 @@ async function loadContent_() {
     setApiStatus_("DATA: loading...");
     const url = `${GAS_WEBAPP_URL}?action=content&t=${Date.now()}`;
     const res = await fetch(url, { method: "GET" });
-
-    // If Apps Script returns non-OK or blocked, fallback
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = await res.json();
@@ -173,32 +136,30 @@ async function loadContent_() {
     STATE.content = data;
     STATE.loadedFrom = "api";
     setApiStatus_("DATA: live (Sheets)");
-    setupHeroVideo_();
+    setupBackgroundVideo_();
   } catch (err) {
     console.warn("API load failed. Using fallback.", err);
     STATE.content = fallbackContent_();
     STATE.loadedFrom = "fallback";
     setApiStatus_("DATA: fallback (API failed)");
-    setupHeroVideo_();
+    setupBackgroundVideo_();
   }
 }
 
-function setupHeroVideo_() {
+function setupBackgroundVideo_() {
   const content = STATE.content;
   const meta = content?.meta || {};
   const videoUrl = meta?.videoUrl?.[STATE.lang] || meta?.videoUrl?.ko || "assets/hero.mp4";
 
-  // Set source
-  UI.heroVideo.innerHTML = "";
+  UI.bgVideo.innerHTML = "";
   const src = document.createElement("source");
   src.src = videoUrl;
   src.type = "video/mp4";
-  UI.heroVideo.appendChild(src);
+  UI.bgVideo.appendChild(src);
 
-  // play safe
-  UI.heroVideo.load();
-  UI.heroVideo.play().catch(() => {
-    // autoplay might be blocked on some browsers if not muted (we are muted)
+  UI.bgVideo.load();
+  UI.bgVideo.play().catch(() => {
+    // autoplay should work because muted. If device blocks it, user interaction may be needed.
   });
 }
 
@@ -212,7 +173,7 @@ function setLang_(lang) {
   localStorage.setItem("je_kiosk_lang", lang);
   updateLangUI_();
   renderAll_();
-  setupHeroVideo_();
+  setupBackgroundVideo_();
 }
 
 function updateLangUI_() {
@@ -229,12 +190,10 @@ function setRoute_(route) {
 }
 
 function renderRoute_() {
-  // nav active
   UI.navButtons.forEach(b => b.classList.remove("active"));
   const activeBtn = Array.from(UI.navButtons).find(b => b.getAttribute("data-route") === STATE.route);
   if (activeBtn) activeBtn.classList.add("active");
 
-  // pages show/hide
   PAGES.forEach(p => {
     const el = $(`page-${p}`);
     if (!el) return;
@@ -252,17 +211,14 @@ function renderAll_() {
 }
 
 function t_(key) {
-  // UI static translations (not from sheets)
   const dict = UI_TEXT_[key];
   if (!dict) return key;
   return dict[STATE.lang] || dict.ko || key;
 }
 
 function renderTexts_() {
-  // brand
   $("brandSub").textContent = t_("brandSub");
 
-  // nav
   $("navHome").textContent = t_("navHome");
   $("navCompany").textContent = t_("navCompany");
   $("navWork").textContent = t_("navWork");
@@ -270,7 +226,6 @@ function renderTexts_() {
   $("navContract").textContent = t_("navContract");
   $("navDiff").textContent = t_("navDiff");
 
-  // home texts from sheet meta if exists
   const meta = STATE.content?.meta || {};
   $("brandTitle").textContent = meta?.companyName?.[STATE.lang] || meta?.companyName?.ko || "(주)준은로지스틱스";
 
@@ -280,7 +235,6 @@ function renderTexts_() {
   $("btnStart").textContent = t_("btnStart");
   $("homeFootnote").textContent = t_("homeFootnote");
 
-  // section headers
   $("companyTitle").textContent = t_("companyTitle");
   $("companyDesc").textContent = t_("companyDesc");
   $("statsTitle").textContent = t_("statsTitle");
@@ -321,7 +275,6 @@ function renderCompany_() {
   const stats = STATE.content?.stats || [];
   const timeline = STATE.content?.timeline || [];
 
-  // stats
   const box = $("statsBox");
   box.innerHTML = "";
   stats.forEach(s => {
@@ -333,7 +286,6 @@ function renderCompany_() {
     box.appendChild(el);
   });
 
-  // timeline
   const tbox = $("timelineBox");
   tbox.innerHTML = "";
   timeline.forEach(item => {
@@ -352,7 +304,6 @@ function renderCompany_() {
 }
 
 function renderWorkFlow_() {
-  // simple default flow (static, but translated)
   const flow = $("flowBox");
   flow.innerHTML = "";
 
@@ -369,7 +320,6 @@ function renderWorkFlow_() {
     flow.appendChild(el);
   });
 
-  // checklist
   const cbox = $("checklistBox");
   cbox.innerHTML = "";
   CHECKLIST_.forEach(item => {
@@ -389,7 +339,6 @@ function renderWorkFlow_() {
 function renderIncome_() {
   const ul = $("incomeStructureList");
   ul.innerHTML = "";
-
   INCOME_STRUCTURE_.forEach(line => {
     const li = document.createElement("li");
     li.textContent = (line[STATE.lang] || line.ko);
@@ -404,7 +353,6 @@ function renderIncome_() {
     settle.appendChild(li);
   });
 
-  // refresh sim format after language change
   const gross = $("simGross");
   const cost = $("simCost");
   const net = Math.max(0, Number(gross.value || 0) - Number(cost.value || 0));
@@ -412,7 +360,6 @@ function renderIncome_() {
 }
 
 function renderContract_() {
-  // contract steps (static)
   const steps = $("contractSteps");
   steps.innerHTML = "";
   CONTRACT_STEPS_.forEach((s, idx) => {
@@ -425,7 +372,6 @@ function renderContract_() {
     steps.appendChild(el);
   });
 
-  // contract checks (static)
   const checks = $("contractCheckList");
   checks.innerHTML = "";
   CONTRACT_CHECKS_.forEach(s => {
@@ -434,7 +380,6 @@ function renderContract_() {
     checks.appendChild(li);
   });
 
-  // FAQ from sheet
   const faq = STATE.content?.faq_contract || [];
   const box = $("faqBox");
   box.innerHTML = "";
@@ -474,8 +419,7 @@ function renderDiff_() {
   });
 }
 
-/** Utilities */
-
+/* Utils */
 function escapeHtml_(str) {
   return String(str || "")
     .replaceAll("&", "&amp;")
@@ -496,7 +440,6 @@ function formatCurrency_(num, lang) {
 }
 
 /** Static UI Text + Content (translated) */
-
 const UI_TEXT_ = {
   brandSub: { ko: "면접자 키오스크", zh: "面試自助展示", en: "Interview Kiosk" },
 
@@ -632,7 +575,6 @@ const CONTRACT_CHECKS_ = [
 ];
 
 function fallbackContent_() {
-  // Used if API fails or GAS URL not set.
   return {
     ok: true,
     generatedAt: new Date().toISOString(),
