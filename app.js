@@ -23,7 +23,39 @@ const PAGES = ["home", "company", "work", "income", "contract", "diff"];
 
 function $(id){ return document.getElementById(id); }
 
+/* =========================================================
+   ✅ PWA 추가 코드 (Service Worker 등록)
+   - sw.js 파일이 repo 루트에 있어야 함 (./sw.js)
+   - GitHub Pages에서 설치 버튼이 뜨려면 필요
+========================================================= */
+async function registerServiceWorker_() {
+  if (!("serviceWorker" in navigator)) return;
+
+  try {
+    // GitHub Pages에서도 상대경로로 안전하게 등록
+    const reg = await navigator.serviceWorker.register("./sw.js", { scope: "./" });
+    console.log("[PWA] Service Worker registered:", reg);
+
+    // 업데이트 감지 시 로그
+    reg.addEventListener("updatefound", () => {
+      const installing = reg.installing;
+      if (!installing) return;
+
+      installing.addEventListener("statechange", () => {
+        if (installing.state === "installed") {
+          console.log("[PWA] New version installed. Reload to apply.");
+        }
+      });
+    });
+  } catch (e) {
+    console.warn("[PWA] Service Worker registration failed:", e);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
+  /* ✅ PWA 추가: Service Worker 먼저 등록 */
+  await registerServiceWorker_();
+
   bindUI_();
   initLanguage_();
   initRouter_();
@@ -630,4 +662,3 @@ function fallbackContent_() {
     ],
   };
 }
-
